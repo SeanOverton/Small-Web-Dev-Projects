@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <title>Basic Todo App</title>
+    <script>
+        var globalIndex = 0;
+        var completedTasks = 0;
+
+        function addItem(){
+            var list = document.getElementById("list");
+
+            var newTodo = document.createElement("LI"); 
+            newTodo.id=globalIndex;  
+            
+            newTodo.innerHTML = document.getElementById("input").value + " <button onclick=removeItem("+globalIndex+")>Delete</button>"       
+            
+            globalIndex++;
+            list.appendChild(newTodo);
+        }
+
+        function removeItem(index){
+            var list = document.getElementById("list");
+                                
+            list.removeChild(document.getElementById(index));
+
+            completedTasks++;
+
+            if(completedTasks%50==0){
+                alert("You are a master of achieving! Congratulations");
+            }
+            else if(completedTasks%10==0){
+                alert("GREAT JOB!!! Keep up the productivity!");
+            }
+
+            document.getElementById("totalCompletedTasks").innerHTML = completedTasks;
+        }
+    </script>
+</head>
+
+<body>
+        <H1>BASIC TODO-APP</H1>
+        <h3>Total tasks complete: <span id="totalCompletedTasks">0</span></h3>
+        <input type="text" id="input"></input><button onclick=addItem();>Add Todo!</button>
+        <ol id="list"></ol>
+</body>
+
+</html>

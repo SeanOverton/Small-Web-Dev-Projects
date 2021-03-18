@@ -1,0 +1,126 @@
+<html>
+<head>
+    <title>Conways Game of Life</title>
+    <script>
+        //decides how large the world should be that is generated ie. 50*50 table
+        var SIZE = 30;
+        var currentState=[];
+        var futureState=[];
+
+        //dynamically create table for the WORLD!!
+        function createWorld(){
+            console.log("createWorld() called");
+            
+            //loop through 2d array currentState randomly decide if its a 1 or 0
+            for (var row = 0; row < SIZE; row++){
+                var tempArray = [];
+                for (var col = 0; col < SIZE; col++){
+
+                    var rand = Math.random();
+
+                    if(rand > 0.95){
+                        tempArray.push(1); 
+                    }
+                    else{
+                        tempArray.push(0); 
+                    }
+                    
+                }
+                currentState.push(tempArray);
+            }
+
+            //initialises both array with same array structure so can be accessed later
+            futureState = currentState;
+        
+            displayWorld();
+            //loop function that calls continuous loop?
+            loopThroughLife();
+        }
+
+        function displayWorld(){
+            console.log("displayWorld() called")
+            var worldTable = document.getElementById("theWorld");
+            
+            //loops through and creates desired table elements
+            var theWorld = "";
+            for (var row = 0; row < SIZE; row++){
+                theWorld += "<tr id=" + row + ">\n"
+                for (var col = 0; col < SIZE; col++){
+                    var cell = "";
+
+                    //if cells alive then displays
+                    if(currentState[row][col]){
+                        cell = "O"
+                    }
+
+                    theWorld += "<td id="+row+">"+cell+"</td>\n"
+                }
+                theWorld += "</tr>\n"
+            }
+
+            worldTable.innerHTML = theWorld;
+        }
+   
+        function loopThroughLife(){
+            setInterval(run, 2000);
+            //run();
+        }
+
+        function run(){
+            calculateFutureState();
+            displayWorld();
+        }
+
+        function calculateFutureState(){
+            //starts at 1 and -1 from max to kill off side boxes
+            //these two outside loops through actual array
+            for (var row = 1; row < SIZE-1; row++){
+                for (var col = 1; col < SIZE-1; col++){
+
+                    //loops through surrounding cells
+                    var surroundingAliveCells = 0;
+                    for(var i = row-1; i <= row+1; i++){
+                        for(var x = col-1; x <= col+1; x++){
+                            //checks its a SURROUNDING cell not the cell itself 
+                            if(row != i && col != x){
+                                console.log("Checking: row:"+i+", col:"+x);
+                                //checks if cell is overpopulated
+                                if(surroundingAliveCells > 3){
+                                    futureState[row][col] = 0;
+                                }
+
+                                //checks if surrounding cell is alive
+                                if(currentState[i][x]){
+                                    console.log("Alive");
+                                    surroundingAliveCells++;
+                                } 
+                            }
+                        }
+                    }
+                    
+                    if(surroundingAliveCells == 2 || surroundingAliveCells == 3){
+                        futureState[row][col] = 1;
+                    }
+                    else{
+                        futureState[row][col] = 0;
+                    }
+                    console.log("Surrounding alive cells:" + surroundingAliveCells);
+                }
+            }
+
+            console.log(futureState);
+    
+            currentState = futureState;
+        }
+   </script>
+</head>
+
+<body>
+    <h1>Conways Game of Life (in javascript)</h1>
+    <hr>
+    <button onclick=createWorld();>Create Life</button>
+    <br/>
+    <table id="theWorld" style="font-size:small;"></table>
+</body>
+
+</html>
